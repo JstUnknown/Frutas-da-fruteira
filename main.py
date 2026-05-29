@@ -17,8 +17,46 @@ cap=cv2.VideoCapture(0)
 mp_hands=mp.solutions.hands
 hands=mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
+WHITE=(255,255,255)
+fruits_images={
+    "apple":{
+        "whole": pygame.image.load("").convert_alpha(),
+        "cut": pygame.image.load("").convert_alpha(),
+    },
+}
 
-#class particulas
+#class fruta
+class Fruit:
+    def __init__ (self):
+        self.type=random.choice(list(fruits_images.keys()))
+        self.x=random.randint(100, width-100)
+        self.y=height+50
+        self.size=random.randint(100,140)
+        self.speed_x=random.randint(-5,5)
+        self.speed_y=random.randint(-25,-15)
+        self.gravity=0.5
+        self.sliced=False
+        self.slice_time=15
+        self.radius=self.size//2
+    def move (self):
+        self.x+=self.speed_x
+        self.y+=self.speed_y
+        self.speed_y+=self.gravity
+        if self.sliced:
+            self.slice_time-=1
+    def draw (self):
+        if not self.sliced:
+            image=fruits_images[self.type]["whole"]
+        else: 
+            image=fruits_images[self.type]["cut"]
+        image=pygame.transform.scale(image,(self.size,self.size))
+        rect=image.get_rect(center=(self.x,self.y))
+        screen.blit(image,rect)
+    def off_screen(self):
+        return self.y>screen.get_height()+100
+
+
+#lass particulas
 class Particles:
     def __init__ (self,x,y):
         self.x=x
@@ -39,6 +77,8 @@ class Particles:
 particles=[]
 trail_points=[]
 running=True
+score=0
+font = pygame.font.SysFont("Arial", 40)
 while running:
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
@@ -81,6 +121,18 @@ while running:
         pygame.draw.line(screen,(120,120,120),start,end,20)
         pygame.draw.line(screen,(220,220,220),start,end,12)
         pygame.draw.line(screen,(255,255,255),start,end,5)
+    
+    #particulas
+    for particle in particles [:]:
+        particle.move()
+        particle.draw()
+        if particle.life<=0:
+            particles.remove(particle)
+    
+    #score
+    score_text= font.render(f"Score: {score}",True,WHITE)
+    screen.blit(score_text,(15,15))
+
     pygame.display.update()
     clock.tick(60)
 cap.release()
