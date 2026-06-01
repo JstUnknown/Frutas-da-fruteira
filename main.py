@@ -20,8 +20,8 @@ hands=mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7, min_tracking
 WHITE=(255,255,255)
 fruits_images={
     "apple":{
-        "whole": pygame.image.load("").convert_alpha(),
-        "cut": pygame.image.load("").convert_alpha(),
+        "whole": pygame.image.load("assets/blueberry.png").convert_alpha(),
+        "cut": pygame.image.load("assets/sliced_buleberry.png").convert_alpha(),
     },
 }
 
@@ -73,9 +73,10 @@ class Particles:
         pygame.draw.circle(screen,(255,255,255),(int(self.x),int(self.y)),self.size)
 
 # variaveis
-
+fruits=[]
 particles=[]
 trail_points=[]
+spawn_timer=0
 running=True
 score=0
 font = pygame.font.SysFont("Arial", 40)
@@ -122,6 +123,27 @@ while running:
         pygame.draw.line(screen,(220,220,220),start,end,12)
         pygame.draw.line(screen,(255,255,255),start,end,5)
     
+    #frutas 
+    spawn_timer+1
+    if spawn_timer>20:
+        fruits.append(Fruit())
+        spawn_timer=0
+    for fruit in fruits[:]:
+        fruit.move()
+        fruit.draw()
+        if not fruit.sliced:
+            for point in trail_points:
+                distance=math.hypot(fruit.x-point[0], fruit.y-point[1])
+                if distance<fruit.radius:
+                    fruit.sliced=True
+                    for _ in range(25):
+                        particles.append(Particles(fruit.x,fruit.y))
+                    score+=1
+                    break
+        if fruit.sliced and fruit.slice_time<=0:
+            fruits.remove(fruit)
+        elif fruit.off_screen():
+            fruits.remove(fruit)
     #particulas
     for particle in particles [:]:
         particle.move()
