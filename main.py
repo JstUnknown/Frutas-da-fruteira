@@ -124,7 +124,7 @@ while running:
         pygame.draw.line(screen,(255,255,255),start,end,5)
     
     #frutas 
-    spawn_timer+1
+    spawn_timer+=1
     if spawn_timer>20:
         fruits.append(Fruit())
         spawn_timer=0
