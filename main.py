@@ -4,6 +4,17 @@ import cv2
 import mediapipe as mp
 import math
 import numpy as np
+import os
+import sys
+
+
+
+def resource_path(relative_path):
+    try:
+        base_path=sys._MEIPASS
+    except  Exception:
+        base_path=os.path.abspath(".")
+    return os.path.join(base_path,relative_path)
 
 width=1600 
 height=900
@@ -19,9 +30,17 @@ hands=mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7, min_tracking
 
 WHITE=(255,255,255)
 fruits_images={
-    "apple":{
-        "whole": pygame.image.load("assets/blueberry.png").convert_alpha(),
-        "cut": pygame.image.load("assets/sliced_buleberry.png").convert_alpha(),
+    "blueberry":{
+        "whole": pygame.image.load(resource_path("assets/blueberry.png")).convert_alpha(),
+        "cut": pygame.image.load(resource_path("assets/sliced_buleberry.png")).convert_alpha(),
+    },
+    "strawberry":{
+        "whole": pygame.image.load(resource_path("assets\strawberry.png")).convert_alpha(),
+        "cut": pygame.image.load(resource_path("assets\sliced_strawberry.png")).convert_alpha(),
+    },
+     "grapes":{
+        "whole": pygame.image.load(resource_path("assets\grapes.png")).convert_alpha(),
+        "cut": pygame.image.load(resource_path("assets\sliced_grapes.png")).convert_alpha(),
     },
 }
 
